@@ -1,0 +1,54 @@
+import vehicleService, { Vehicle } from '@/services/vehicleService';
+import React, { createContext, ReactNode, useContext, useEffect, useState } from 'react';
+
+type VehicleContextType = {
+  vehicles: Vehicle[];
+  loading: boolean;
+  refresh: () => Promise<void>;
+  selected?: Vehicle | null;
+  selectVehicle: (id: string | null) => void;
+};
+
+const VehicleContext = createContext<VehicleContextType | undefined>(undefined);
+
+export const VehicleProvider = ({ children }: { children: ReactNode }) => {
+  const [vehicles, setVehicles] = useState<Vehicle[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selected, setSelected] = useState<Vehicle | null>(null);
+
+  async function refresh() {
+    setLoading(true);
+    try {
+      const data = await vehicleService.getVehicles();
+      setVehicles(data);
+    } catch (err) {
+      // swallow for now; consider reporting error
+    } finally {
+      setLoading(false);
+    }
+  }
+
+  function selectVehicle(id: string | null) {
+    if (!id) return setSelected(null);
+    const v = vehicles.find((x) => x.id === id) ?? null;
+    setSelected(v);
+  }
+
+  useEffect(() => {
+    refresh();
+  }, []);
+
+  return (
+    <VehicleContext.Provider value={{ vehicles, loading, refresh, selected, selectVehicle }}>
+      {children}
+    </VehicleContext.Provider>
+  );
+};
+
+export function useVehicles() {
+  const ctx = useContext(VehicleContext);
+  if (!ctx) throw new Error('useVehicles must be used within a VehicleProvider');
+  return ctx;
+}
+
+export default VehicleContext;

@@ -1,0 +1,18 @@
+// Placeholder Firebase config - replace with your project's values
+export const firebaseConfig = {
+  apiKey: process.env.EXPO_FIREBASE_API_KEY ?? '',
+  authDomain: process.env.EXPO_FIREBASE_AUTH_DOMAIN ?? '',
+  projectId: process.env.EXPO_FIREBASE_PROJECT_ID ?? '',
+  storageBucket: process.env.EXPO_FIREBASE_STORAGE_BUCKET ?? '',
+  messagingSenderId: process.env.EXPO_FIREBASE_MESSAGING_SENDER_ID ?? '',
+  appId: process.env.EXPO_FIREBASE_APP_ID ?? '',
+};
+
+export function initFirebase() {
+  // Example: initialize Firebase app here if you add firebase packages.
+  // import { initializeApp } from 'firebase/app'
+  // const app = initializeApp(firebaseConfig)
+  return firebaseConfig;
+}
+
+export default firebaseConfig;
